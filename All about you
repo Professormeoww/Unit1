@@ -1,0 +1,849 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit 1 "All About Me" — Interactive Practice</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/manrope@latest/latin-400-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/manrope@latest/latin-600-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/manrope@latest/latin-800-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/space-grotesk@latest/latin-700-normal.css">
+<style>
+:root{
+  --bg:#f5f7fc; --text:#1b2340; --muted:#5b6486;
+  --card:#ffffff; --stroke:#e6eaf5; --stroke2:#dfe5f2;
+  --ok:#10b981; --warn:#f59e0b; --err:#ef4444;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Manrope',system-ui,sans-serif; background:var(--bg); color:var(--text);
+  min-height:100vh; padding:28px 16px 80px; overflow-x:hidden;
+}
+body::before,body::after{
+  content:''; position:fixed; border-radius:50%; filter:blur(110px); z-index:-1;
+}
+body::before{width:520px;height:520px;background:rgba(99,102,241,.16);top:-160px;left:-140px}
+body::after{width:460px;height:460px;background:rgba(13,148,136,.14);bottom:-160px;right:-120px}
+
+.wrap{max-width:1080px;margin:0 auto}
+
+/* ---------- HERO ---------- */
+.hero{
+  background:rgba(255,255,255,.8); border:1px solid var(--stroke); border-radius:28px;
+  padding:40px 36px; backdrop-filter:blur(20px); position:relative; overflow:hidden;
+  box-shadow:0 24px 60px -34px rgba(28,35,64,.3);
+}
+.hero::before{
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(600px 200px at 10% 0%,rgba(99,102,241,.1),transparent 60%);
+  pointer-events:none;
+}
+.hero h1{
+  font-family:'Space Grotesk',sans-serif; font-size:clamp(1.7rem,4vw,2.6rem); letter-spacing:-.5px;
+  background:linear-gradient(90deg,#4f46e5,#0d9488,#db2777);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.hero p.sub{color:var(--muted);margin-top:6px;font-size:1.02rem}
+.hero-row{display:flex;gap:18px;align-items:flex-end;flex-wrap:wrap;margin-top:26px}
+.field label{display:block;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:700}
+.inp{
+  background:#fff; border:1px solid var(--stroke2); border-radius:14px;
+  padding:12px 16px; color:var(--text); font:inherit; width:100%; transition:.2s;
+}
+.inp:focus{outline:none;border-color:#6366f1;box-shadow:0 0 0 4px rgba(99,102,241,.14)}
+.progress-wrap{flex:1;min-width:220px}
+.pbar{height:10px;border-radius:99px;background:var(--stroke);overflow:hidden}
+.pfill{
+  height:100%;width:0%;border-radius:99px;transition:width .6s cubic-bezier(.22,1,.36,1);
+  background:linear-gradient(90deg,#10b981,#f59e0b,#f97316,#ec4899);
+}
+.ptext{font-size:.85rem;color:var(--muted);margin-top:8px;font-weight:600}
+
+/* ---------- TABS ---------- */
+.tabs{
+  display:flex;gap:8px;flex-wrap:wrap;margin:26px 0;padding:8px;
+  background:rgba(255,255,255,.85);border:1px solid var(--stroke);border-radius:20px;backdrop-filter:blur(20px);
+  position:sticky;top:12px;z-index:50;box-shadow:0 14px 40px -26px rgba(28,35,64,.35);
+}
+.tab{
+  flex:1;min-width:140px;border:0;border-radius:14px;padding:14px 10px;cursor:pointer;
+  background:transparent;color:var(--muted);font:inherit;font-weight:700;font-size:.92rem;
+  display:flex;align-items:center;justify-content:center;gap:8px;transition:.25s;
+}
+.tab:hover{background:#eef1f9;color:var(--text)}
+.tab.active{background:linear-gradient(135deg,var(--ta),var(--tb));color:#fff;box-shadow:0 10px 26px -10px var(--ta)}
+.tab .tick{display:none;font-size:.8rem}
+.tab.done .tick{display:inline}
+
+/* ---------- BLOCKS & CARDS ---------- */
+.block{display:none}
+.block.active{display:block}
+.block-head{margin:8px 4px 22px}
+.block-head h2{font-family:'Space Grotesk',sans-serif;font-size:1.6rem;display:flex;align-items:center;gap:12px}
+.block-head .dot{width:14px;height:14px;border-radius:50%;background:var(--acc);box-shadow:0 0 16px var(--acc)}
+.block-head p{color:var(--muted);margin-top:6px}
+
+.card{
+  --acc:#6366f1; --acc2:#4f46e5;
+  background:var(--card); border:1px solid var(--stroke); border-radius:22px;
+  padding:26px; margin-bottom:22px; position:relative; overflow:hidden;
+  box-shadow:0 14px 44px -28px rgba(28,35,64,.3);
+  animation:rise .5s both;
+}
+.card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(var(--acc),var(--acc2))}
+.card[data-a="g"]{--acc:#10b981;--acc2:#0d9488}
+.card[data-a="y"]{--acc:#f59e0b;--acc2:#d97706}
+.card[data-a="o"]{--acc:#f97316;--acc2:#ef4444}
+.card[data-a="p"]{--acc:#ec4899;--acc2:#a855f7}
+.card[data-a="i"]{--acc:#6366f1;--acc2:#4f46e5}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+.card-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.exnum{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:.85rem;
+  background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;
+  padding:6px 12px;border-radius:10px;
+}
+.card-top h3{font-size:1.15rem}
+.badge{
+  margin-left:auto;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;font-weight:800;
+  padding:5px 10px;border-radius:99px;border:1px solid var(--stroke2);color:var(--muted);
+}
+.badge.auto{color:#0e7490;border-color:rgba(14,116,144,.35);background:rgba(14,116,144,.06)}
+.badge.write{color:#a21caf;border-color:rgba(162,28,175,.3);background:rgba(162,28,175,.06)}
+
+.instr{
+  background:#f7f9fe;border:1px dashed var(--stroke2);border-radius:14px;
+  padding:12px 16px;color:var(--muted);font-size:.95rem;margin-bottom:18px;
+}
+.instr b{color:var(--text)}
+
+/* matching */
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.mitem{
+  background:#fff;border:1px solid var(--stroke2);border-radius:14px;
+  padding:12px 14px;cursor:pointer;transition:.2s;font-size:.95rem;
+}
+.mitem:hover{transform:translateY(-2px);border-color:var(--acc);box-shadow:0 8px 20px -14px rgba(28,35,64,.4)}
+.mitem.sel{background:var(--acc);color:#fff;border-color:transparent;font-weight:700}
+.mitem.paired{border-color:var(--acc);box-shadow:inset 0 0 0 1px var(--acc)}
+.mitem.ok{border-color:var(--ok);background:#ecfdf5;color:#065f46}
+.mitem.bad{border-color:var(--err);background:#fef2f2;color:#991b1b}
+
+/* inputs / gaps */
+.line{background:#f8fafd;border:1px solid var(--stroke);border-radius:14px;padding:14px 16px;margin-bottom:12px;font-size:.98rem;line-height:1.7}
+.gap{
+  background:#eef2fa;border:0;border-bottom:2px solid var(--acc);border-radius:8px 8px 0 0;
+  padding:6px 8px;color:var(--text);font:inherit;width:12ch;text-align:center;transition:.2s;
+}
+.gap:focus{outline:none;background:#e3e9f7}
+.gap.ok{border-bottom-color:var(--ok);background:#ecfdf5}
+.gap.bad{border-bottom-color:var(--err);background:#fef2f2}
+.wide{width:100%;margin-top:8px}
+textarea.inp{min-height:110px;resize:vertical;line-height:1.6}
+
+/* chips / sorting */
+.bank{display:flex;flex-wrap:wrap;gap:10px;background:#f8fafd;border:1px solid var(--stroke);border-radius:16px;padding:14px;margin-bottom:16px;min-height:64px}
+.chip{
+  padding:9px 18px;border-radius:99px;background:#fff;border:1px solid var(--stroke2);
+  cursor:pointer;user-select:none;transition:.2s;font-weight:600;font-size:.92rem;color:var(--text);
+}
+.chip:hover{transform:translateY(-2px);border-color:var(--acc)}
+.chip.sel{background:var(--acc);color:#fff;border-color:transparent;box-shadow:0 8px 20px -8px var(--acc)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.dropcol{border:2px dashed #d7ddec;border-radius:18px;padding:16px;min-height:230px;background:#fbfcfe;transition:.2s}
+.dropcol.hot{border-color:var(--acc);background:#f4f7ff}
+.dropcol h4{text-align:center;padding:10px;border-radius:12px;color:#fff;margin-bottom:12px;font-size:.95rem}
+.dropcol.grad h4{background:linear-gradient(135deg,#06b6d4,#0d9488)}
+.dropcol.ungrad h4{background:linear-gradient(135deg,#fb7185,#ef4444)}
+.drop{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+
+/* mc */
+.mcq{background:#f8fafd;border:1px solid var(--stroke);border-radius:14px;padding:14px 16px;margin-bottom:12px}
+.opts{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.opt{
+  padding:8px 18px;border-radius:12px;border:1px solid var(--stroke2);background:#fff;
+  cursor:pointer;transition:.2s;font-weight:600;font-size:.92rem;color:var(--text);
+}
+.opt:hover{border-color:var(--acc)}
+.opt.sel{background:var(--acc);color:#fff;border-color:transparent}
+.opt.ok{border-color:var(--ok);background:#ecfdf5;color:#065f46}
+.opt.bad{border-color:var(--err);background:#fef2f2;color:#991b1b}
+
+/* buttons */
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.btn{
+  border:0;border-radius:14px;padding:12px 24px;font:inherit;font-weight:800;font-size:.93rem;
+  cursor:pointer;transition:.25s;letter-spacing:.02em;
+}
+.btn.primary{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;box-shadow:0 10px 26px -10px var(--acc)}
+.btn.primary:hover{transform:translateY(-2px);filter:brightness(1.06)}
+.btn.primary:active{transform:scale(.97)}
+.btn.ghost{background:#fff;color:var(--text);border:1px solid var(--stroke2)}
+.btn.ghost:hover{background:#f2f5fb}
+
+/* feedback */
+.fb{display:none;margin-top:14px;padding:13px 16px;border-radius:14px;font-size:.95rem;font-weight:600}
+.fb.show{display:block;animation:rise .3s}
+.fb.ok{background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46}
+.fb.warn{background:#fffbeb;border:1px solid #fde68a;color:#92400e}
+.fb.err{background:#fef2f2;border:1px solid #fecaca;color:#991b1b}
+
+/* extras */
+.example{background:#eefaff;border:1px solid #a5f3fc;border-radius:14px;padding:14px 16px;margin:14px 0;font-size:.95rem;line-height:1.7;color:#155e75}
+.example b{color:#0e7490}
+.pq{background:#fffbeb;border:1px solid #fde68a;border-radius:16px;padding:18px;margin-top:18px}
+.pq h4{margin-bottom:12px;color:#92400e}
+.pq label{display:block;font-size:.92rem;margin:10px 0 6px;color:var(--text)}
+.hidden{display:none}
+
+/* report */
+.checklist{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin:18px 0}
+.ck{
+  display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:12px;
+  background:#fff;border:1px solid var(--stroke);font-size:.9rem;font-weight:600;color:var(--muted);
+}
+.ck .box{width:20px;height:20px;border-radius:6px;border:2px solid var(--stroke2);display:grid;place-items:center;font-size:.75rem;flex:none}
+.ck.done{color:#065f46;border-color:#a7f3d0;background:#ecfdf5}
+.ck.done .box{background:var(--ok);border-color:var(--ok);color:#fff}
+#reportPanel{display:none;margin-top:20px}
+#reportPanel.show{display:block;animation:rise .4s}
+#reportPre{
+  white-space:pre-wrap;background:#f6f8fc;border:1px solid var(--stroke);border-radius:16px;
+  padding:20px;font-family:ui-monospace,'Cascadia Mono',Consolas,monospace;font-size:.86rem;line-height:1.65;color:#334155;
+}
+
+@media(max-width:760px){
+  .mgrid,.cols{grid-template-columns:1fr}
+  .tabs{position:static}
+  .hero{padding:28px 22px}
+}
+@media print{
+  body{background:#fff;color:#000;padding:0}
+  body::before,body::after,.hero,.tabs,.block:not(#b5),.actions,.checklist,.fb{display:none!important}
+  #reportPanel{display:block!important}
+  #reportPre{background:#fff;color:#000;border:1px solid #999}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HERO -->
+  <header class="hero">
+    <h1>Unit 1 · All About Me</h1>
+    <p class="sub">Interactive Practice · Level A2+ / B1 · Vocabulary → Modifiers → Present Continuous → Final Challenge</p>
+    <div class="hero-row">
+      <div class="field" style="flex:1;min-width:220px">
+        <label for="studentName">Student name</label>
+        <input class="inp" id="studentName" placeholder="Type your name…">
+      </div>
+      <div class="progress-wrap">
+        <div class="pbar"><div class="pfill" id="progFill"></div></div>
+        <div class="ptext" id="progText">0 / 10 tasks completed</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- TABS -->
+  <nav class="tabs">
+    <button class="tab active" data-t="b1" style="--ta:#10b981;--tb:#0d9488">🟢 Vocabulary <span class="tick">✓</span></button>
+    <button class="tab" data-t="b2" style="--ta:#f59e0b;--tb:#d97706">🟡 Modifiers <span class="tick">✓</span></button>
+    <button class="tab" data-t="b3" style="--ta:#f97316;--tb:#ef4444">🟠 Present Cont. <span class="tick">✓</span></button>
+    <button class="tab" data-t="b4" style="--ta:#ec4899;--tb:#a855f7">🔴 Challenge <span class="tick">✓</span></button>
+    <button class="tab" data-t="b5" style="--ta:#6366f1;--tb:#4f46e5">📊 Report <span class="tick">✓</span></button>
+  </nav>
+
+  <!-- ============ BLOCK 1 ============ -->
+  <section class="block active" id="b1">
+    <div class="block-head" style="--acc:#10b981">
+      <h2><span class="dot"></span>Block 1 · Vocabulary</h2>
+      <p>Goal: use advanced B1 vocabulary to describe yourself and other people.</p>
+    </div>
+
+    <article class="card" data-a="g">
+      <div class="card-top"><span class="exnum">EX 1.1</span><h3>Match the Meaning</h3><span class="badge auto">auto-check</span></div>
+      <p class="instr"><b>Instructions:</b> click a word on the left, then click its definition on the right. These 12 words and phrases will help you in the next exercise!</p>
+      <div class="mgrid">
+        <div id="mLeft">
+          <div class="mitem" data-k="1">1. an only child</div>
+          <div class="mitem" data-k="2">2. to be into (something)</div>
+          <div class="mitem" data-k="3">3. well-dressed</div>
+          <div class="mitem" data-k="4">4. to get along well with</div>
+          <div class="mitem" data-k="5">5. careless</div>
+          <div class="mitem" data-k="6">6. moody</div>
+          <div class="mitem" data-k="7">7. a sense of humour</div>
+          <div class="mitem" data-k="8">8. to take part in</div>
+          <div class="mitem" data-k="9">9. to share (interests/hobbies)</div>
+          <div class="mitem" data-k="10">10. to hang out (with friends)</div>
+          <div class="mitem" data-k="11">11. cheerful</div>
+          <div class="mitem" data-k="12">12. untidy</div>
+        </div>
+        <div id="mRight">
+          <div class="mitem" data-k="10">A. to spend free time relaxing with friends</div>
+          <div class="mitem" data-k="1">B. not having brothers or sisters</div>
+          <div class="mitem" data-k="11">C. happy and positive, always smiling</div>
+          <div class="mitem" data-k="4">D. to have a good relationship with someone</div>
+          <div class="mitem" data-k="7">E. the ability to laugh and enjoy funny things</div>
+          <div class="mitem" data-k="2">F. to be very interested in a hobby or activity</div>
+          <div class="mitem" data-k="12">G. not neat or organized, messy</div>
+          <div class="mitem" data-k="3">H. wearing stylish and appropriate clothes</div>
+          <div class="mitem" data-k="8">I. to join an activity or event with other people</div>
+          <div class="mitem" data-k="6">J. changing emotions quickly, sometimes happy, sometimes sad</div>
+          <div class="mitem" data-k="9">K. to have the same interests as someone else</div>
+          <div class="mitem" data-k="5">L. not paying enough attention to details</div>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn primary" id="check11">Check answers</button>
+        <button class="btn ghost" id="reset11">Reset</button>
+      </div>
+      <div class="fb" id="fb11"></div>
+    </article>
+
+    <article class="card" data-a="g">
+      <div class="card-top"><span class="exnum">EX 1.2</span><h3>Vocabulary Upgrade</h3><span class="badge write">writing</span></div>
+      <p class="instr"><b>Instructions:</b> rewrite the A2 sentences below to sound more advanced (B1). <b>No hints this time!</b> Go back to <b>Exercise 1.1</b>, find the best B1 word or phrase for each sentence and use it in your new version. Your answers are saved for the teacher's report.</p>
+      <div class="example"><b>Example:</b> I have no brothers or sisters. → <i>I am an only child.</i></div>
+      <div class="line">1. My friend is very happy and always smiles.
+        <input class="inp wide" id="o12a" data-open placeholder="Your B1 sentence…"></div>
+      <div class="line">2. I really like playing video games.
+        <input class="inp wide" id="o12b" data-open placeholder="Your B1 sentence…"></div>
+      <div class="line">3. My brother doesn't pay attention to his things, and his room is a mess.
+        <input class="inp wide" id="o12c" data-open placeholder="Your B1 sentence…"></div>
+      <div class="line">4. At weekends I usually spend free time with my friends in the park or in a café.
+        <input class="inp wide" id="o12d" data-open placeholder="Your B1 sentence…"></div>
+      <div class="line">5. My best friend and I like the same music and the same films.
+        <input class="inp wide" id="o12e" data-open placeholder="Your B1 sentence…"></div>
+      <div class="line">6. Next month I want to join the school music competition.
+        <input class="inp wide" id="o12f" data-open placeholder="Your B1 sentence…"></div>
+      <div class="line">7. We always laugh together because my best friend jokes a lot and sees what is funny.
+        <input class="inp wide" id="o12g" data-open placeholder="Your B1 sentence…"></div>
+      <div class="line">8. My cousin always wears stylish and appropriate clothes.
+        <input class="inp wide" id="o12h" data-open placeholder="Your B1 sentence…"></div>
+      <div class="actions">
+        <button class="btn primary" id="save12">Save answers</button>
+        <button class="btn ghost" id="model12btn">Show model answers</button>
+      </div>
+      <div class="example hidden" id="model12"><b>Model answers:</b><br>
+        1. My friend is very cheerful.<br>
+        2. I am really into playing video games.<br>
+        3. My brother is careless and his room is always untidy.<br>
+        4. At weekends I hang out with my friends in the park or in a café.<br>
+        5. My best friend and I share the same music and the same films.<br>
+        6. Next month I want to take part in the school music competition.<br>
+        7. We always laugh together because my best friend has a great sense of humour.<br>
+        8. My cousin is always well-dressed.</div>
+      <div class="fb" id="fb12"></div>
+    </article>
+
+    <article class="card" data-a="g">
+      <div class="card-top"><span class="exnum">EX 1.3</span><h3>Context &amp; Personalization</h3><span class="badge auto">auto-check + writing</span></div>
+      <p class="instr"><b>Instructions:</b> complete the text about Alex, then answer the questions about YOURSELF (saved to the report).</p>
+      <div class="line">
+        "Hi, I'm Alex. I'm quite <input class="gap" id="g1"> about my future, but sometimes I get a bit <input class="gap" id="g2"> when things don't go to plan or when people are late. In my free time, I love to <input class="gap" id="g3"> with my friends at the park or in a café. It's important to me to have friends who <input class="gap" id="g4"> my interests, especially music and sports. We even want to <input class="gap" id="g5"> a local music festival this summer! Most importantly, my best friend is very funny and has a great <input class="gap" id="g6" style="width:16ch">, which makes every day better."
+      </div>
+      <div class="actions">
+        <button class="btn primary" id="check13">Check gaps</button>
+        <button class="btn ghost" id="show13">Show answers</button>
+      </div>
+      <div class="fb" id="fb13"></div>
+      <div class="pq">
+        <h4>💬 Now answer about yourself:</h4>
+        <label for="pq1">1. Who do you usually like to <b>hang out</b> with, and what do you do?</label>
+        <textarea class="inp" id="pq1" data-open></textarea>
+        <label for="pq2">2. What hobbies or interests do you <b>share</b> with your best friend?</label>
+        <textarea class="inp" id="pq2" data-open></textarea>
+        <label for="pq3">3. Do you feel <b>confident</b> or <b>impatient</b> when you speak English? Why?</label>
+        <textarea class="inp" id="pq3" data-open></textarea>
+        <div class="actions"><button class="btn primary" id="save13p">Save personal answers</button></div>
+        <div class="fb" id="fb13p"></div>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ BLOCK 2 ============ -->
+  <section class="block" id="b2">
+    <div class="block-head" style="--acc:#f59e0b">
+      <h2><span class="dot"></span>Block 2 · Modifiers</h2>
+      <p>Goal: choose the right "volume control" for gradable and ungradable adjectives.</p>
+    </div>
+
+    <article class="card" data-a="y">
+      <div class="card-top"><span class="exnum">EX 2.1</span><h3>The Sorting Hat</h3><span class="badge auto">auto-check</span></div>
+      <p class="instr"><b>Instructions:</b> click a word, then click a column to place it. Click a placed word to return it to the bank.</p>
+      <div class="bank" id="bank">
+        <span class="chip" data-w="cold">cold</span><span class="chip" data-w="hilarious">hilarious</span>
+        <span class="chip" data-w="scared">scared</span><span class="chip" data-w="bad">bad</span>
+        <span class="chip" data-w="terrible">terrible</span><span class="chip" data-w="terrified">terrified</span>
+        <span class="chip" data-w="exhausted">exhausted</span><span class="chip" data-w="brilliant">brilliant</span>
+        <span class="chip" data-w="funny">funny</span><span class="chip" data-w="tired">tired</span>
+        <span class="chip" data-w="freezing">freezing</span><span class="chip" data-w="good">good</span>
+      </div>
+      <div class="cols">
+        <div class="dropcol grad" id="colGrad"><h4>🌡️ GRADABLE (normal)</h4><div class="drop"></div></div>
+        <div class="dropcol ungrad" id="colUngrad"><h4>🔥 UNGRADABLE (extreme)</h4><div class="drop"></div></div>
+      </div>
+      <div class="actions">
+        <button class="btn primary" id="check21">Check sorting</button>
+        <button class="btn ghost" id="reset21">Reset</button>
+      </div>
+      <div class="fb" id="fb21"></div>
+    </article>
+
+    <article class="card" data-a="y">
+      <div class="card-top"><span class="exnum">EX 2.2</span><h3>Choose the Right Partner</h3><span class="badge auto">auto-check</span></div>
+      <p class="instr"><b>Instructions:</b> choose the correct modifier for each sentence.</p>
+      <div class="mcq" data-ex="2.2" data-a="absolutely"><b>1.</b> I didn't sleep at all. I am ____ exhausted today.
+        <div class="opts"><span class="opt" data-v="absolutely">absolutely</span><span class="opt" data-v="a bit">a bit</span></div></div>
+      <div class="mcq" data-ex="2.2" data-a="quite"><b>2.</b> It's ____ cold outside, so take a jacket. It's not freezing, just chilly.
+        <div class="opts"><span class="opt" data-v="quite">quite</span><span class="opt" data-v="completely">completely</span></div></div>
+      <div class="mcq" data-ex="2.2" data-a="absolutely"><b>3.</b> My new teacher is ____ brilliant! She explains everything perfectly.
+        <div class="opts"><span class="opt" data-v="very">very</span><span class="opt" data-v="absolutely">absolutely</span></div></div>
+      <div class="mcq" data-ex="2.2" data-a="totally"><b>4.</b> The horror movie was ____ terrifying. I couldn't sleep!
+        <div class="opts"><span class="opt" data-v="totally">totally</span><span class="opt" data-v="fairly">fairly</span></div></div>
+      <div class="mcq" data-ex="2.2" data-a="quite"><b>5.</b> He is ____ funny, but his jokes are sometimes a bit silly.
+        <div class="opts"><span class="opt" data-v="quite">quite</span><span class="opt" data-v="completely">completely</span></div></div>
+      <div class="mcq" data-ex="2.2" data-a="a bit"><b>6.</b> I am ____ tired, I need a cup of coffee.
+        <div class="opts"><span class="opt" data-v="a bit">a bit</span><span class="opt" data-v="absolutely">absolutely</span></div></div>
+      <div class="actions">
+        <button class="btn primary" id="check22">Check answers</button>
+        <button class="btn ghost" id="reset22">Reset</button>
+      </div>
+      <div class="fb" id="fb22"></div>
+    </article>
+  </section>
+
+  <!-- ============ BLOCK 3 ============ -->
+  <section class="block" id="b3">
+    <div class="block-head" style="--acc:#f97316">
+      <h2><span class="dot"></span>Block 3 · Present Continuous</h2>
+      <p>Goal: master all aspects of Present Continuous and avoid the stative-verb trap.</p>
+    </div>
+
+    <article class="card" data-a="o">
+      <div class="card-top"><span class="exnum">EX 3.1</span><h3>Identify the Aspect</h3><span class="badge auto">auto-check</span></div>
+      <p class="instr"><b>Uses:</b> A — action right now · B — temporary situation · C — fixed future plan · D — annoying habit (always)</p>
+      <div class="mcq" data-ex="3.1" data-a="A"><b>1.</b> "Look! It's raining heavily outside."<div class="opts"><span class="opt" data-v="A">A</span><span class="opt" data-v="B">B</span><span class="opt" data-v="C">C</span><span class="opt" data-v="D">D</span></div></div>
+      <div class="mcq" data-ex="3.1" data-a="B"><b>2.</b> "I'm living with my parents until I find my own flat."<div class="opts"><span class="opt" data-v="A">A</span><span class="opt" data-v="B">B</span><span class="opt" data-v="C">C</span><span class="opt" data-v="D">D</span></div></div>
+      <div class="mcq" data-ex="3.1" data-a="C"><b>3.</b> "We're meeting Sarah at the café at 7 PM tomorrow."<div class="opts"><span class="opt" data-v="A">A</span><span class="opt" data-v="B">B</span><span class="opt" data-v="C">C</span><span class="opt" data-v="D">D</span></div></div>
+      <div class="mcq" data-ex="3.1" data-a="D"><b>4.</b> "He is always leaving his dirty cups in the sink!"<div class="opts"><span class="opt" data-v="A">A</span><span class="opt" data-v="B">B</span><span class="opt" data-v="C">C</span><span class="opt" data-v="D">D</span></div></div>
+      <div class="actions">
+        <button class="btn primary" id="check31">Check answers</button>
+        <button class="btn ghost" id="reset31">Reset</button>
+      </div>
+      <div class="fb" id="fb31"></div>
+    </article>
+
+    <article class="card" data-a="o">
+      <div class="card-top"><span class="exnum">EX 3.2</span><h3>The Stative Verb Trap</h3><span class="badge write">writing + auto-check</span></div>
+      <p class="instr"><b>Instructions:</b> write the corrected sentence (or type "Correct" if there is no mistake). Answers are saved to the report.</p>
+      <div class="line"><b>1.</b> I am not understanding this grammar rule.<input class="inp wide" id="s1" data-open placeholder="Corrected sentence…"></div>
+      <div class="line"><b>2.</b> She is wanting to buy a new laptop.<input class="inp wide" id="s2" data-open placeholder="Corrected sentence…"></div>
+      <div class="line"><b>3.</b> Look! They are playing football in the park.<input class="inp wide" id="s3" data-open placeholder="Corrected sentence or 'Correct'…"></div>
+      <div class="line"><b>4.</b> This book is belonging to my sister.<input class="inp wide" id="s4" data-open placeholder="Corrected sentence…"></div>
+      <div class="line"><b>5.</b> I am loving this new song!<input class="inp wide" id="s5" data-open placeholder="Corrected sentence…"></div>
+      <div class="actions">
+        <button class="btn primary" id="check32">Check answers</button>
+        <button class="btn ghost" id="show32">Show answers</button>
+      </div>
+      <div class="fb" id="fb32"></div>
+    </article>
+
+    <article class="card" data-a="o">
+      <div class="card-top"><span class="exnum">EX 3.3</span><h3>Present Simple vs. Present Continuous</h3><span class="badge auto">auto-check</span></div>
+      <p class="instr"><b>Instructions:</b> choose the correct form of the verb.</p>
+      <div class="mcq" data-ex="3.3" data-a="go"><b>1a.</b> I usually ____ to school by bus…<div class="opts"><span class="opt" data-v="go">go</span><span class="opt" data-v="am going">am going</span></div></div>
+      <div class="mcq" data-ex="3.3" data-a="am walking"><b>1b.</b> …but this week I ____ because my bike is broken.<div class="opts"><span class="opt" data-v="walk">walk</span><span class="opt" data-v="am walking">am walking</span></div></div>
+      <div class="mcq" data-ex="3.3" data-a="is having"><b>2.</b> She ____ a shower right now. Can she call you back?<div class="opts"><span class="opt" data-v="has">has</span><span class="opt" data-v="is having">is having</span></div></div>
+      <div class="mcq" data-ex="3.3" data-a="doesn't like"><b>3a.</b> He ____ coffee.<div class="opts"><span class="opt" data-v="doesn't like">doesn't like</span><span class="opt" data-v="isn't liking">isn't liking</span></div></div>
+      <div class="mcq" data-ex="3.3" data-a="prefers"><b>3b.</b> He ____ tea.<div class="opts"><span class="opt" data-v="prefers">prefers</span><span class="opt" data-v="is preferring">is preferring</span></div></div>
+      <div class="actions">
+        <button class="btn primary" id="check33">Check answers</button>
+        <button class="btn ghost" id="reset33">Reset</button>
+      </div>
+      <div class="fb" id="fb33"></div>
+    </article>
+  </section>
+
+  <!-- ============ BLOCK 4 ============ -->
+  <section class="block" id="b4">
+    <div class="block-head" style="--acc:#ec4899">
+      <h2><span class="dot"></span>Block 4 · Final Challenge</h2>
+      <p>Goal: combine vocabulary, modifiers and grammar in one real-life task.</p>
+    </div>
+
+    <article class="card" data-a="p">
+      <div class="card-top"><span class="exnum">EX 4.1</span><h3>Profile Upgrade</h3><span class="badge write">writing</span></div>
+      <p class="instr"><b>Instructions:</b> rewrite the A2 profile below as a B1 text (min. 50 characters). Your text is saved for the teacher's report.</p>
+      <div class="line" style="border-color:#fecaca">
+        <b>Basic A2 text:</b><br>"Hi, I am Anna. I am 15. I live in Moscow. I have no brothers or sisters. I like music. I am shy. But I am happy with my friends."
+      </div>
+      <div class="example"><b>You MUST use:</b> 2+ new vocabulary words · 2+ modifiers · correct Present Simple / Continuous</div>
+      <textarea class="inp" id="profileText" data-open style="min-height:150px" placeholder="Write your B1 upgrade here…"></textarea>
+      <div class="actions">
+        <button class="btn primary" id="save41">Save my answer</button>
+        <button class="btn ghost" id="example41btn">Show example answer</button>
+      </div>
+      <div class="example hidden" id="example41"><b>Example B1 upgrade:</b><br>"Hi, I'm Anna. I'm 15 and I'm currently living in Moscow. I am an only child. I am really into music. I think I'm quite shy, but I can be very cheerful when I hang out with my friends."</div>
+      <div class="fb" id="fb41"></div>
+    </article>
+  </section>
+
+  <!-- ============ BLOCK 5: REPORT ============ -->
+  <section class="block" id="b5">
+    <div class="block-head" style="--acc:#6366f1">
+      <h2><span class="dot"></span>Teacher Report</h2>
+      <p>Complete all 10 tasks to unlock the report. Written answers are saved automatically in this browser.</p>
+    </div>
+
+    <article class="card" data-a="i">
+      <div class="card-top"><span class="exnum">STATUS</span><h3>Task checklist</h3></div>
+      <div class="checklist" id="checkList"></div>
+      <div class="actions">
+        <button class="btn primary" id="genReport">📄 Generate teacher report</button>
+      </div>
+      <div class="fb" id="fbRep"></div>
+
+      <div id="reportPanel">
+        <pre id="reportPre"></pre>
+        <div class="actions">
+          <button class="btn primary" id="copyRep">Copy report</button>
+          <button class="btn ghost" id="dlRep">Download .txt</button>
+          <button class="btn ghost" id="printRep">Print</button>
+        </div>
+      </div>
+    </article>
+  </section>
+
+</div>
+
+<script>
+(function(){
+'use strict';
+var $=function(s,r){return (r||document).querySelector(s);};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
+
+/* ---------- STATE ---------- */
+var TASKS=['1.1','1.2','1.3','1.3P','2.1','2.2','3.1','3.2','3.3','4.1'];
+var TASK_LABELS={'1.1':'Ex 1.1 Matching','1.2':'Ex 1.2 Upgrade (writing)','1.3':'Ex 1.3 Gap-fill','1.3P':'Ex 1.3 Personal answers','2.1':'Ex 2.1 Sorting','2.2':'Ex 2.2 Modifiers','3.1':'Ex 3.1 Aspects','3.2':'Ex 3.2 Stative trap','3.3':'Ex 3.3 Simple vs Continuous','4.1':'Ex 4.1 Profile upgrade'};
+var BLOCK_TASKS={b1:['1.1','1.2','1.3','1.3P'],b2:['2.1','2.2'],b3:['3.1','3.2','3.3'],b4:['4.1']};
+var state={name:'',scores:{},open:{},done:{}};
+
+function persist(){try{localStorage.setItem('u1practice',JSON.stringify(state));}catch(e){}}
+function restore(){try{var raw=localStorage.getItem('u1practice');if(raw){var s=JSON.parse(raw);if(s&&typeof s==='object'){state.name=s.name||'';state.scores=s.scores||{};state.open=s.open||{};state.done=s.done||{};}}}catch(e){}}
+
+function fb(id,type,html){var el=$('#'+id);if(!el)return;el.className='fb show '+type;el.innerHTML=html;}
+
+function refresh(){
+  var done=TASKS.filter(function(t){return state.done[t];}).length;
+  $('#progFill').style.width=(done/TASKS.length*100)+'%';
+  $('#progText').textContent=done+' / '+TASKS.length+' tasks completed';
+  $$('.tab').forEach(function(tab){
+    var t=tab.getAttribute('data-t');
+    if(BLOCK_TASKS[t]){
+      var all=BLOCK_TASKS[t].every(function(x){return state.done[x];});
+      tab.classList.toggle('done',all);
+    }
+  });
+  var cl=$('#checkList');cl.innerHTML='';
+  TASKS.forEach(function(t){
+    var d=document.createElement('div');
+    d.className='ck'+(state.done[t]?' done':'');
+    d.innerHTML='<span class="box">'+(state.done[t]?'✓':'')+'</span>'+TASK_LABELS[t];
+    cl.appendChild(d);
+  });
+}
+function markDone(t){state.done[t]=true;persist();refresh();}
+
+/* ---------- TABS ---------- */
+$$('.tab').forEach(function(tab){
+  tab.addEventListener('click',function(){
+    $$('.tab').forEach(function(t){t.classList.remove('active');});
+    $$('.block').forEach(function(b){b.classList.remove('active');});
+    tab.classList.add('active');
+    $('#'+tab.getAttribute('data-t')).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+
+/* ---------- OPEN ANSWERS AUTOSAVE ---------- */
+$$('[data-open]').forEach(function(el){
+  if(state.open[el.id])el.value=state.open[el.id];
+  el.addEventListener('input',function(){state.open[el.id]=el.value;persist();});
+});
+var nameInput=$('#studentName');
+nameInput.value=state.name||'';
+nameInput.addEventListener('input',function(){state.name=nameInput.value;persist();});
+
+/* ---------- EX 1.1 MATCHING (12 pairs) ---------- */
+var mMap={},mSel=null;
+$$('#mLeft .mitem').forEach(function(el){
+  el.addEventListener('click',function(){
+    $$('#mLeft .mitem').forEach(function(x){x.classList.remove('sel');});
+    el.classList.add('sel');mSel=el.getAttribute('data-k');
+  });
+});
+$$('#mRight .mitem').forEach(function(el){
+  el.addEventListener('click',function(){
+    if(!mSel)return;
+    mMap[mSel]=el.getAttribute('data-k');
+    var L=$('#mLeft .mitem[data-k="'+mSel+'"]');
+    if(L){L.classList.add('paired');L.classList.remove('sel');}
+    el.classList.add('paired');mSel=null;
+  });
+});
+$('#check11').addEventListener('click',function(){
+  var c=0;
+  for(var i=1;i<=12;i++){
+    var ok=mMap[i]===String(i);
+    var L=$('#mLeft .mitem[data-k="'+i+'"]'),R=$('#mRight .mitem[data-k="'+i+'"]');
+    [L,R].forEach(function(el){el.classList.remove('ok','bad');el.classList.add(ok?'ok':'bad');});
+    if(ok)c++;
+  }
+  state.scores['1.1']={c:c,t:12};markDone('1.1');
+  fb('fb11',c===12?'ok':'warn','<b>'+c+'/12</b> correct pairs.'+(c===12?' Perfect! You know all 12 B1 phrases! 🎉':' Red items need another look.'));
+});
+$('#reset11').addEventListener('click',function(){
+  mMap={};mSel=null;
+  $$('#mLeft .mitem, #mRight .mitem').forEach(function(el){el.classList.remove('sel','paired','ok','bad');});
+  $('#fb11').className='fb';
+});
+
+/* ---------- EX 1.2 (8 sentences, no hints) ---------- */
+var O12=['o12a','o12b','o12c','o12d','o12e','o12f','o12g','o12h'];
+$('#save12').addEventListener('click',function(){
+  var filled=O12.filter(function(id){return $('#'+id).value.trim().length>3;}).length;
+  if(filled<O12.length){fb('fb12','warn','Please write all '+O12.length+' sentences before saving ('+filled+'/'+O12.length+' done).');return;}
+  markDone('1.2');fb('fb12','ok','All 8 answers saved to the teacher report ✓');
+});
+$('#model12btn').addEventListener('click',function(){$('#model12').classList.toggle('hidden');});
+
+/* ---------- EX 1.3 ---------- */
+var GAPS={g1:'confident',g2:'impatient',g3:'hang out',g4:'share',g5:'take part in',g6:'a sense of humour'};
+function norm(v){return v.toLowerCase().replace(/\s+/g,' ').trim();}
+$('#check13').addEventListener('click',function(){
+  var c=0;
+  Object.keys(GAPS).forEach(function(id){
+    var el=$('#'+id),ok=norm(el.value)===GAPS[id];
+    el.classList.remove('ok','bad');el.classList.add(ok?'ok':'bad');
+    if(ok)c++;
+  });
+  state.scores['1.3']={c:c,t:6};markDone('1.3');
+  fb('fb13',c===6?'ok':(c>=4?'warn':'err'),'<b>'+c+'/6</b> gaps correct.'+(c===6?' Excellent! 🎉':''));
+});
+$('#show13').addEventListener('click',function(){
+  Object.keys(GAPS).forEach(function(id){var el=$('#'+id);el.value=GAPS[id];el.classList.remove('bad');el.classList.add('ok');});
+});
+$('#save13p').addEventListener('click',function(){
+  var filled=['pq1','pq2','pq3'].filter(function(id){return $('#'+id).value.trim().length>3;}).length;
+  if(filled<3){fb('fb13p','warn','Answer all 3 personal questions first ('+filled+'/3 done).');return;}
+  markDone('1.3P');fb('fb13p','ok','Personal answers saved to the report ✓');
+});
+
+/* ---------- EX 2.1 SORTING ---------- */
+var selChip=null;
+function bindChip(chip){
+  chip.addEventListener('click',function(ev){
+    ev.stopPropagation();
+    if(chip.parentElement.classList.contains('drop')){
+      $('#bank').appendChild(chip);chip.classList.remove('sel');selChip=null;return;
+    }
+    $$('.chip').forEach(function(c){c.classList.remove('sel');});
+    chip.classList.add('sel');selChip=chip;
+  });
+}
+$$('.chip').forEach(bindChip);
+['#colGrad','#colUngrad'].forEach(function(sel){
+  var col=$(sel);
+  col.addEventListener('click',function(){
+    if(!selChip)return;
+    col.querySelector('.drop').appendChild(selChip);
+    selChip.classList.remove('sel');selChip=null;
+  });
+  col.addEventListener('mouseenter',function(){col.classList.add('hot');});
+  col.addEventListener('mouseleave',function(){col.classList.remove('hot');});
+});
+$('#check21').addEventListener('click',function(){
+  var GRAD=['cold','scared','bad','funny','tired','good'];
+  var UNGR=['hilarious','terrible','terrified','exhausted','brilliant','freezing'];
+  var c=0;
+  $$('#colGrad .drop .chip').forEach(function(ch){if(GRAD.indexOf(ch.getAttribute('data-w'))>-1)c++;});
+  $$('#colUngrad .drop .chip').forEach(function(ch){if(UNGR.indexOf(ch.getAttribute('data-w'))>-1)c++;});
+  var placed=$$('#colGrad .drop .chip').length+$$('#colUngrad .drop .chip').length;
+  if(placed<12){fb('fb21','warn','Place all 12 words first ('+placed+'/12 placed).');return;}
+  state.scores['2.1']={c:c,t:12};markDone('2.1');
+  fb('fb21',c===12?'ok':'warn','<b>'+c+'/12</b> words in the right column.'+(c===12?' You feel the "volume" of adjectives! 🔥':''));
+});
+$('#reset21').addEventListener('click',function(){
+  $$('#colGrad .drop .chip, #colUngrad .drop .chip').forEach(function(ch){$('#bank').appendChild(ch);});
+  selChip=null;$$('.chip').forEach(function(c){c.classList.remove('sel');});
+  $('#fb21').className='fb';
+});
+
+/* ---------- GENERIC MC ---------- */
+$$('.mcq').forEach(function(q){
+  $$('.opt',q).forEach(function(o){
+    o.addEventListener('click',function(){
+      $$('.opt',q).forEach(function(x){x.classList.remove('sel');});
+      o.classList.add('sel');
+    });
+  });
+});
+function gradeGroup(ex){
+  var qs=$$('.mcq[data-ex="'+ex+'"]'),c=0;
+  qs.forEach(function(q){
+    var a=q.getAttribute('data-a'),sel=$('.opt.sel',q);
+    $$('.opt',q).forEach(function(o){
+      o.classList.remove('ok','bad');
+      if(o.getAttribute('data-v')===a)o.classList.add('ok');
+    });
+    if(sel&&sel.getAttribute('data-v')===a)c++;
+    else if(sel)sel.classList.add('bad');
+  });
+  return {c:c,t:qs.length};
+}
+function resetGroup(ex){
+  $$('.mcq[data-ex="'+ex+'"] .opt').forEach(function(o){o.classList.remove('sel','ok','bad');});
+}
+$('#check22').addEventListener('click',function(){var r=gradeGroup('2.2');state.scores['2.2']=r;markDone('2.2');fb('fb22',r.c===r.t?'ok':'warn','<b>'+r.c+'/'+r.t+'</b> correct.');});
+$('#reset22').addEventListener('click',function(){resetGroup('2.2');$('#fb22').className='fb';});
+$('#check31').addEventListener('click',function(){var r=gradeGroup('3.1');state.scores['3.1']=r;markDone('3.1');fb('fb31',r.c===r.t?'ok':'warn','<b>'+r.c+'/'+r.t+'</b> correct.');});
+$('#reset31').addEventListener('click',function(){resetGroup('3.1');$('#fb31').className='fb';});
+$('#check33').addEventListener('click',function(){var r=gradeGroup('3.3');state.scores['3.3']=r;markDone('3.3');fb('fb33',r.c===r.t?'ok':'warn','<b>'+r.c+'/'+r.t+'</b> correct.');});
+$('#reset33').addEventListener('click',function(){resetGroup('3.3');$('#fb33').className='fb';});
+
+/* ---------- EX 3.2 ---------- */
+var VAL32=[
+  function(v){return /don'?t understand|do not understand/.test(v);},
+  function(v){return /wants/.test(v);},
+  function(v){return /correct|no mistake|^ok$|✓/.test(v);},
+  function(v){return /belongs/.test(v);},
+  function(v){return /\blove\b/.test(v)&&!/loving/.test(v);}
+];
+$('#check32').addEventListener('click',function(){
+  var c=0,empty=0;
+  VAL32.forEach(function(fn,i){
+    var el=$('#s'+(i+1)),v=norm(el.value);
+    if(!v){empty++;}
+    var ok=fn(v);
+    el.classList.remove('ok','bad');el.classList.add(ok?'ok':'bad');
+    if(ok)c++;
+  });
+  if(empty>0){fb('fb32','warn','Fill in all 5 corrections first.');return;}
+  state.scores['3.2']={c:c,t:5};markDone('3.2');
+  fb('fb32',c===5?'ok':'warn','<b>'+c+'/5</b> correct. Remember: stative verbs never take -ing!');
+});
+$('#show32').addEventListener('click',function(){
+  var ans=["I don't understand this grammar rule.","She wants to buy a new laptop.","Correct!","This book belongs to my sister.","I love this new song!"];
+  ans.forEach(function(a,i){var el=$('#s'+(i+1));el.value=a;el.classList.remove('bad');el.classList.add('ok');state.open[el.id]=a;});
+  persist();
+});
+
+/* ---------- EX 4.1 ---------- */
+$('#save41').addEventListener('click',function(){
+  var t=$('#profileText').value.trim();
+  if(t.length<50){fb('fb41','err','Your text is too short ('+t.length+' characters). Write at least 50.');return;}
+  markDone('4.1');fb('fb41','ok','Profile saved to the teacher report ✓ Great job!');
+});
+$('#example41btn').addEventListener('click',function(){$('#example41').classList.toggle('hidden');});
+
+/* ---------- REPORT ---------- */
+var SCORE_LABELS={'1.1':'Ex 1.1 · Matching (12 pairs)','1.3':'Ex 1.3 · Gap-fill','2.1':'Ex 2.1 · Sorting','2.2':'Ex 2.2 · Modifiers (MC)','3.1':'Ex 3.1 · Aspects of Present Continuous','3.2':'Ex 3.2 · Stative Verb Trap','3.3':'Ex 3.3 · Simple vs Continuous'};
+var OPEN_LABELS=[
+  ['o12a','Ex 1.2 · Upgrade #1'],
+  ['o12b','Ex 1.2 · Upgrade #2'],
+  ['o12c','Ex 1.2 · Upgrade #3'],
+  ['o12d','Ex 1.2 · Upgrade #4'],
+  ['o12e','Ex 1.2 · Upgrade #5'],
+  ['o12f','Ex 1.2 · Upgrade #6'],
+  ['o12g','Ex 1.2 · Upgrade #7'],
+  ['o12h','Ex 1.2 · Upgrade #8'],
+  ['pq1','Ex 1.3 · Personal Q1 (hang out)'],
+  ['pq2','Ex 1.3 · Personal Q2 (share)'],
+  ['pq3','Ex 1.3 · Personal Q3 (confident/impatient)'],
+  ['s1','Ex 3.2 · Correction #1'],
+  ['s2','Ex 3.2 · Correction #2'],
+  ['s3','Ex 3.2 · Correction #3'],
+  ['s4','Ex 3.2 · Correction #4'],
+  ['s5','Ex 3.2 · Correction #5'],
+  ['profileText','Ex 4.1 · Profile Upgrade (final text)']
+];
+function remaining(){return TASKS.filter(function(t){return !state.done[t];});}
+function buildReport(){
+  var L=[];
+  L.push('ОТЧЁТ ПО ПРАКТИКЕ · UNIT 1 "ALL ABOUT ME"');
+  L.push('INTERACTIVE PRACTICE REPORT');
+  L.push('==========================================');
+  L.push('Студент / Student : '+(state.name||'—'));
+  L.push('Дата / Date       : '+new Date().toLocaleString('ru-RU'));
+  var done=TASKS.filter(function(t){return state.done[t];}).length;
+  L.push('Прогресс          : '+done+' / '+TASKS.length+' заданий');
+  L.push('');
+  L.push('--- АВТОПРОВЕРКА / AUTO-GRADED ---');
+  Object.keys(SCORE_LABELS).forEach(function(k){
+    var s=state.scores[k];
+    L.push((s?(s.c+' / '+s.t):'не выполнено / not attempted')+'   '+SCORE_LABELS[k]);
+  });
+  L.push('');
+  L.push('--- ПИСЬМЕННЫЕ ЗАДАНИЯ / WRITTEN TASKS ---');
+  ['1.2','1.3P','4.1'].forEach(function(t){
+    L.push((state.done[t]?'[выполнено ✓]':'[не выполнено ✗]')+'   '+TASK_LABELS[t]);
+  });
+  L.push('');
+  L.push('--- ОТВЕТЫ УЧЕНИЦЫ / STUDENT ANSWERS ---');
+  OPEN_LABELS.forEach(function(pair){
+    var v=(state.open[pair[0]]||'').trim();
+    L.push('• '+pair[1]+':');
+    L.push('  '+(v?v:'(пусто / empty)'));
+    L.push('');
+  });
+  L.push('==========================================');
+  L.push('Сформировано автоматически · Interactive Practice Unit 1');
+  return L.join('\n');
+}
+$('#genReport').addEventListener('click',function(){
+  var rem=remaining();
+  if(rem.length){
+    fb('fbRep','warn','Сначала завершите задания / Complete first: '+rem.map(function(t){return TASK_LABELS[t];}).join('; '));
+    return;
+  }
+  $('#reportPre').textContent=buildReport();
+  $('#reportPanel').classList.add('show');
+  fb('fbRep','ok','Report is ready! Copy, download or print it below.');
+  $('#reportPanel').scrollIntoView({behavior:'smooth',block:'start'});
+});
+$('#copyRep').addEventListener('click',function(){
+  var txt=$('#reportPre').textContent;
+  function fallback(){
+    var ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);
+    ta.select();try{document.execCommand('copy');}catch(e){}ta.remove();
+    fb('fbRep','ok','Report copied ✓');
+  }
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(function(){fb('fbRep','ok','Report copied ✓');},fallback);
+  }else fallback();
+});
+$('#dlRep').addEventListener('click',function(){
+  var blob=new Blob([$('#reportPre').textContent],{type:'text/plain;charset=utf-8'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='Unit1_AllAboutMe_report.txt';
+  document.body.appendChild(a);a.click();a.remove();
+  URL.revokeObjectURL(a.href);
+  fb('fbRep','ok','File downloaded ✓');
+});
+$('#printRep').addEventListener('click',function(){window.print();});
+
+/* ---------- INIT ---------- */
+restore();
+$$('[data-open]').forEach(function(el){if(state.open[el.id])el.value=state.open[el.id];});
+nameInput.value=state.name||'';
+refresh();
+})();
+</script>
+</body>
+</html>
+```
